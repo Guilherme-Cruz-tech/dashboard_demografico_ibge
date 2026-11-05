@@ -1,0 +1,16 @@
+UF,Regiao,Etnia,Situacao_Domicilio,Populacao_Indigena,Rendimento_Medio,Taxa_Alfabetizacao,Idade_Media
+AM,Norte,Tikúna,Rural,35000,1200,78.5,24.5
+AM,Norte,Yanomami,Rural,27000,1100,62.0,21.0
+AM,Norte,Kokama,Urbana,15000,1600,85.0,27.2
+AP,Norte,Wajãpi,Rural,1200,1300,70.5,23.8
+RR,Norte,Yanomami,Rural,25000,1150,60.0,20.5
+RR,Norte,Macuxi,Urbana,18000,1700,88.2,28.0
+PA,Norte,Kayapó,Rural,14000,1400,74.0,25.1
+PA,Norte,Munduruku,Rural,13000,1350,72.5,24.2
+MS,Centro-Oeste,Guarani Kaiowá,Rural,45000,1500,81.0,26.4
+MS,Centro-Oeste,Terena,Urbana,28000,1900,91.5,29.1
+MT,Centro-Oeste,Xavante,Rural,16000,1450,76.0,25.0
+BA,Nordeste,Pataxó,Rural,12000,1550,83.0,27.5
+BA,Nordeste,Tupinambá,Urbana,8000,1750,92.0,30.2
+PE,Nordeste,Pankararu,Rural,7000,1400,79.0,28.4
+SP,Sudeste,Guarani,Urbana,5000,2400,96.5,33.0
