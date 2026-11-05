@@ -204,12 +204,19 @@ else:
         st.subheader("📊 2. Boxplot — Análise de Dispersão e Outliers")
         fig = px.box(
             df_filtrado,
+<<<<<<< HEAD
             x="Regiao",
             y="Populacao_Indigena",
             color="Regiao",
             points="all",
             template="plotly_white",
             title="Distribuição e Identificação de Outliers por Região",
+=======
+            y="Populacao_Indigena",
+            points="all",
+            template="plotly_white",
+            title="Identificação de Valores Atípicos na População",
+>>>>>>> 1ef972d19a4ee4bca1b2b07e8f395150d4b026ae
         )
         st.plotly_chart(fig, use_container_width=True)
 
