@@ -3,14 +3,13 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-st.set_page_config(
-    page_title="Projeto 3 - Pessoas Indígenas", page_icon="🌿", layout="wide"
-)
+st.set_page_config(page_title="Projeto 3 - Pessoas Indígenas", layout="wide")
 
 st.markdown(
     """
     <style>
         .stApp { background-color: #0b0f19; color: #f3f4f6; }
+        header[data-testid="stHeader"] { background-color: #0b0f19 !important; }
         .main-title { font-size: 2.2rem; color: #34d399; font-weight: 800; margin-bottom: 0px; }
         .sub-title { font-size: 1.1rem; color: #9ca3af; margin-bottom: 20px; }
     </style>
@@ -19,7 +18,7 @@ st.markdown(
 )
 
 st.markdown(
-    '<p class="main-title">🌿 Projeto 3: Pessoas Indígenas — Localização e Situação do Domicílio</p>',
+    '<p class="main-title">Projeto 3: Pessoas Indígenas — Localização e Situação do Domicílio</p>',
     unsafe_allow_html=True,
 )
 st.markdown(
@@ -40,10 +39,9 @@ def carregar_dados():
             "Regiao": ["Norte", "Norte", "Centro-Oeste", "Sudeste"],
             "Etnia": ["Tikúna", "Yanomami", "Guarani Kaiowá", "Guarani"],
             "Situacao_Domicilio": ["Rural", "Rural", "Rural", "Urbana"],
-            "Populacao_Indigena": [35000, 27000, 45000, 5000],
+            "Populacao_Indigena": [35000, 27000, 45000, 9500],
             "Rendimento_Medio": [1200, 1100, 1500, 2400],
             "Taxa_Alfabetizacao": [78.5, 62.0, 81.0, 96.5],
-            "Idade_Media": [24.5, 21.0, 26.4, 33.0],
             "Tempo_Deslocamento": [45, 50, 38, 20],
         }
         return pd.DataFrame(dados_fallback)
@@ -85,7 +83,7 @@ with st.sidebar:
             "4. Gráfico de Distribuição (Histograma do Rendimento)",
             "5. Gráfico de Frequência (Contagem por Etnia)",
             "6. Heatmap (Densidade: Região vs Domicílio)",
-            "7. Gráfico de Linhas (Evolução da Idade Média)",
+            "7. Gráfico de Linhas (Tempo de Deslocamento por Etnia)",
             "8. Gráfico de Pizza (Proporção Urbana vs Rural)",
             "9. Gráfico de Regressão (Alfabetização vs Rendimento)",
         ],
@@ -129,8 +127,9 @@ if df_filtrado.empty:
         "⚠️ Nenhum registo encontrado com a combinação de filtros selecionada."
     )
 else:
+    st.subheader(f"📊 {opcao_grafico}")
+
     if opcao_grafico.startswith("1."):
-        st.subheader("📊 1. Gráfico de Barras — População Indígena por Região")
         fig = px.bar(
             df_filtrado.groupby("Regiao")["Populacao_Indigena"]
             .sum()
@@ -140,7 +139,7 @@ else:
             color="Regiao",
             text_auto=True,
             template="plotly_dark",
-            color_discrete_sequence=px.colors.qualitative.Prism,
+            color_discrete_sequence=["#34d399", "#60a5fa", "#f43f5e", "#fbbf24", "#a78bfa"],
         )
         fig.update_layout(
             plot_bgcolor="#0b0f19",
@@ -150,7 +149,6 @@ else:
         st.plotly_chart(fig, use_container_width=True)
 
     elif opcao_grafico.startswith("2."):
-        st.subheader("📊 2. Boxplot — Análise de Dispersão e Outliers")
         fig = px.box(
             df_filtrado,
             x="Regiao",
@@ -159,8 +157,17 @@ else:
             points="all",
             template="plotly_dark",
             title="Distribuição e Identificação de Outliers por Região",
-            color_discrete_sequence=px.colors.qualitative.Prism,
+            color_discrete_sequence=["#34d399", "#60a5fa", "#f43f5e", "#fbbf24", "#a78bfa"],
         )
+        
+        fig.update_yaxes(
+            range=[0, 50000],
+            tickmode="linear",
+            dtick=5000,
+            showgrid=True,
+            gridcolor="rgba(255, 255, 255, 0.1)"
+        )
+        
         fig.update_layout(
             plot_bgcolor="#0b0f19",
             paper_bgcolor="#0b0f19",
@@ -169,9 +176,6 @@ else:
         st.plotly_chart(fig, use_container_width=True)
 
     elif opcao_grafico.startswith("3."):
-        st.subheader(
-            "📊 3. Gráfico de Dispersão — Rendimento vs População Indígena"
-        )
         fig = px.scatter(
             df_filtrado,
             x="Rendimento_Medio",
@@ -180,7 +184,7 @@ else:
             size="Populacao_Indigena",
             template="plotly_dark",
             title="Cruzamento de Rendimento Médio e Volume Populacional",
-            color_discrete_sequence=px.colors.qualitative.Prism,
+            color_discrete_sequence=px.colors.qualitative.Bold,
         )
         fig.update_layout(
             plot_bgcolor="#0b0f19",
@@ -190,9 +194,6 @@ else:
         st.plotly_chart(fig, use_container_width=True)
 
     elif opcao_grafico.startswith("4."):
-        st.subheader(
-            "📊 4. Gráfico de Distribuição — Histograma do Rendimento Médio"
-        )
         fig = px.histogram(
             df_filtrado,
             x="Rendimento_Medio",
@@ -209,9 +210,6 @@ else:
         st.plotly_chart(fig, use_container_width=True)
 
     elif opcao_grafico.startswith("5."):
-        st.subheader(
-            "📊 5. Gráfico de Frequência — Contagem Demográfica por Etnia"
-        )
         freq_df = df_filtrado["Etnia"].value_counts().reset_index()
         freq_df.columns = ["Etnia", "Contagem"]
         fig = px.bar(
@@ -221,7 +219,7 @@ else:
             color="Etnia",
             template="plotly_dark",
             title="Frequência de Ocorrência por Grupo Étnico",
-            color_discrete_sequence=px.colors.qualitative.Prism,
+            color_discrete_sequence=px.colors.qualitative.Bold,
         )
         fig.update_layout(
             plot_bgcolor="#0b0f19",
@@ -231,7 +229,6 @@ else:
         st.plotly_chart(fig, use_container_width=True)
 
     elif opcao_grafico.startswith("6."):
-        st.subheader("📊 6. Heatmap — Densidade: Região vs Domicílio")
         fig = px.density_heatmap(
             df_filtrado,
             x="Regiao",
@@ -240,7 +237,7 @@ else:
             histfunc="sum",
             template="plotly_dark",
             title="Mapa de Calor: Concentração Domiciliar e Geográfica",
-            color_continuous_scale="greens",
+            color_continuous_scale="Viridis",
         )
         fig.update_layout(
             plot_bgcolor="#0b0f19",
@@ -250,16 +247,13 @@ else:
         st.plotly_chart(fig, use_container_width=True)
 
     elif opcao_grafico.startswith("7."):
-        st.subheader(
-            "📊 7. Gráfico de Linhas — Análise da Idade Média por Etnia"
-        )
         fig = px.line(
-            df_filtrado.sort_values("Idade_Media"),
+            df_filtrado.sort_values("Tempo_Deslocamento"),
             x="Etnia",
-            y="Idade_Media",
+            y="Tempo_Deslocamento",
             markers=True,
             template="plotly_dark",
-            title="Variação da Idade Média Demográfica",
+            title="Variação do Tempo de Deslocamento por Etnia",
             color_discrete_sequence=["#34d399"],
         )
         fig.update_layout(
@@ -270,9 +264,6 @@ else:
         st.plotly_chart(fig, use_container_width=True)
 
     elif opcao_grafico.startswith("8."):
-        st.subheader(
-            "📊 8. Gráfico de Pizza / Rosca — Proporção Urbana vs Rural"
-        )
         fig = px.pie(
             df_filtrado,
             names="Situacao_Domicilio",
@@ -290,9 +281,6 @@ else:
         st.plotly_chart(fig, use_container_width=True)
 
     elif opcao_grafico.startswith("9."):
-        st.subheader(
-            "📊 9. Gráfico de Regressão — Taxa de Alfabetização vs Rendimento"
-        )
         x = df_filtrado["Taxa_Alfabetizacao"]
         y = df_filtrado["Rendimento_Medio"]
 
@@ -303,7 +291,7 @@ else:
             color="Etnia",
             template="plotly_dark",
             title="Relação entre Alfabetização e Rendimento Médio",
-            color_discrete_sequence=px.colors.qualitative.Prism,
+            color_discrete_sequence=px.colors.qualitative.Bold,
         )
 
         if len(df_filtrado) > 1:
